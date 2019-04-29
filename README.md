@@ -25,4 +25,10 @@
 
 # 启动
 - 配置 docker-compose.yml文件
-- docker-compose up -d --build --force-recreate 启动
+- docker-compose up -d --build --force-recreate redis
+- docker-compose up -d --build --force-recreate mysql
+- 进入mysql数据库 创建 vote 数据库: create database vote 
+- docker-compose up -d --build --force-recreate vote-service
+
+# api 文档
+http://host:port/doc
