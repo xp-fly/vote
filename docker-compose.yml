@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/conf/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/logs:/logs
+      - ./mysql/data/mysql:/var/lib/mysql
+    restart: always
+  redis:
+    image: hub.c.163.com/public/redis:2.8.4
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/etc/redis/redis_default.conf
+    restart: always
+  vote-service:
+    build: ./vote-service/.
+    container_name: vote-service
+    image: vote-service
+    links:
+      - mysql
+      - redis
+    environment:
+      SERVER_PORT: 3000 # 启动端口
+      DB_HOST: "192.168.0.64" # 数据库地址
+      DB_PORT: 3306 # 数据库端口
+      DB_USERNAME: "root" # 数据库用户
+      DB_PASSWORD: 123456 # 数据库密码
+      DB_DATABASE: "vote" # 数据库名称
+      EMAIL_TRANSPORT: "smtps://1053910251@qq.com:fpijyvdizksxbbgj@smtp.qq.com" # 邮件服务器 smtps 地址
+      EMAIL_FROM: "1053910251@qq.com" # 邮箱发件人
+      REDIS_HOST: "192.168.0.64" # redis 地址
+      REDIS_PORT: 6379 # redis 端口
+      REDIS_PASSWORD: 123456 # redis 密码
+    ports:
+      - 3000:3000
+    entrypoint: ["sh", "entrypoint.d/entrypoint.sh"]
+    restart: always

@@ -1,0 +1,14 @@
+port: ${SERVER_PORT} # 启动端口
+dataSource:
+  host: ${DB_HOST} # 数据库 host 127.0.0.1
+  port: ${DB_PORT} # 数据库端口 3306
+  username: ${DB_USERNAME} # 数据库用户 root
+  password: ${DB_PASSWORD} # 数据库密码 123456
+  database: ${DB_DATABASE} # 数据库名称 vote
+email:
+  transport: ${EMAIL_TRANSPORT} # 邮件服务起的smtps地址 例：smtps://123456789@qq.com:xxxxxxxxxxx@smtp.qq.com
+  from: ${EMAIL_FROM} # 邮箱发件人 例 123456789@qq.com
+redis:
+  host: ${REDIS_HOST}  # redis 地址 127.0.0.1
+  port: ${REDIS_PORT} # 端口 6379
+  password: ${REDIS_PASSWORD} # redis 密码 123456
