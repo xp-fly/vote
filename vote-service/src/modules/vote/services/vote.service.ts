@@ -39,7 +39,7 @@ export class VoteService {
       throw new BadRequestException('该活动未开始或已结束');
     }
     const cacheKey = getActivityResultCacheKey(activity.id);
-    const res = this.redisClient.hget(cacheKey, user.id.toString());
+    const res = await this.redisClient.hget(cacheKey, user.id.toString());
     if (res) {
       throw new BadRequestException('已投过票，请勿重复投票');
     }
@@ -49,7 +49,6 @@ export class VoteService {
         cache: 10000,
       },
     });
-    console.log(activityCandidateCount);
     const midNum = Math.ceil(activityCandidateCount / 2);
     const max = midNum > 5 ? 5 : midNum;
     const min = midNum > 2 ? 2 : midNum;

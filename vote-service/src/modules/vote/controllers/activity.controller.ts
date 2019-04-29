@@ -28,7 +28,11 @@ export class ActivityController {
    */
   @Get()
   async fetch(@Query() query) {
-    return await this.activityService.fetch(query);
+    const [rows, count] = await this.activityService.fetch(query);
+    return {
+      count,
+      rows,
+    };
   }
 
   /**

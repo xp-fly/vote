@@ -85,7 +85,7 @@ export class ActivityService {
    */
   async fetch(query: any) {
     const {limit, offset} = getLimitOffset(query);
-    return await this.activityRepo.find({
+    return await this.activityRepo.findAndCount({
       select: ['id', 'title', 'state', 'createTime', 'updateTime'],
       skip: offset,
       take: limit,
