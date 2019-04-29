@@ -1,9 +1,10 @@
 import {Body, Controller, Get, Post, Query, Res} from '@nestjs/common';
-import {UserService} from '../../modules/user/user.service';
 import {AuthService} from './auth.service';
 import {UserLoginDto} from './dto/user-login.dto';
 import {GenVerifyCodeDto} from './dto/gen-verify-code.dto';
+import {ApiUseTags} from '@nestjs/swagger';
 
+@ApiUseTags('登录相关 api')
 @Controller('auth')
 export class AuthController {
   constructor(

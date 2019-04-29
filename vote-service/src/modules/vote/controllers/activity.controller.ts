@@ -14,7 +14,9 @@ import {CreateActivityDto} from '../dto/create-activity.dto';
 import {ActivityService} from '../services/activity.service';
 import {LoginRole} from '../../../common/decorators/login-role.decorator';
 import {USER_ROLE} from '../../user/constant';
+import {ApiUseTags} from '@nestjs/swagger';
 
+@ApiUseTags('投票活动相关 api')
 @Controller('activity')
 @LoginRole(USER_ROLE.admin)
 export class ActivityController {

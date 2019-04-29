@@ -1,7 +1,9 @@
 import {Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put} from '@nestjs/common';
 import {CandidateService} from '../services/candidate.service';
 import {CreateCandidateDto} from '../dto/create-candidate.dto';
+import {ApiUseTags} from '@nestjs/swagger';
 
+@ApiUseTags('候选人增删改查 api')
 @Controller('candidate')
 export class CandidateController {
   constructor(
