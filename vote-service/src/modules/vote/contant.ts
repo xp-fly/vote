@@ -14,3 +14,11 @@ export enum ACTIVITY_STATE {
 export function getActivityResultCacheKey(id: number) {
   return `activity_result_cache_${id}`;
 }
+
+/**
+ * 获取锁的key
+ * @param id
+ */
+export function getActivityResultLockKey(id: number) {
+  return `activity_result_lock_${id}`;
+}

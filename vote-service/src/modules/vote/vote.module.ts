@@ -10,6 +10,7 @@ import {ActivityService} from './services/activity.service';
 import {VoteService} from './services/vote.service';
 import {CandidateController} from './controllers/candidate.controller';
 import {CandidateService} from './services/candidate.service';
+import {CacheService} from '../../shared/cache/cache.service';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import {CandidateService} from './services/candidate.service';
     ActivityService,
     VoteService,
     CandidateService,
+    CacheService,
   ],
   exports: [
     VoteService,

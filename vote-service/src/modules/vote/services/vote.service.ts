@@ -1,4 +1,4 @@
-import {BadRequestException, HttpException, Injectable} from '@nestjs/common';
+import {BadRequestException, HttpException, Injectable, Logger} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {ActivityCandidateUser} from '../entities/activity-candidate-user.entity';
 import {CreateVoteDto} from '../dto/create-vote.dto';
@@ -9,6 +9,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {ActivityCandidate} from '../entities/activity-candidate.entity';
 import {InjectRedisClient} from 'nestjs-ioredis';
 import {Redis} from 'ioredis';
+import {CacheService} from '../../../shared/cache/cache.service';
 
 @Injectable()
 export class VoteService {
@@ -21,6 +22,7 @@ export class VoteService {
     private readonly activityRepo: Repository<Activity>,
     @InjectRedisClient()
     private readonly redisClient: Redis,
+    private cacheService: CacheService,
   ) {}
 
   /**
@@ -74,29 +76,42 @@ export class VoteService {
     const insertArr: Array<Partial<ActivityCandidateUser>> = [];
 
     for (const activity of activities) {
-      // 当前已投票的人
-      const userIds = activity.activityCandidateUsers.map(item => item.userId);
-      // 活动绑定的候选人
-      const candidateIds = activity.activityCandidates.map(item => item.candidateId);
-
-      const cacheKey = getActivityResultCacheKey(activity.id);
-      const cacheUserIds = await this.redisClient.hkeys(cacheKey);
-      for (const userId of cacheUserIds) {
-        if (userIds.includes(+userId)) {
+      const lockKey = getActivityResultCacheKey(activity.id);
+      try {
+        const isLock = await this.cacheService.getLock(lockKey);
+        if (isLock) {
           continue;
         }
-        const result = await this.redisClient.hget(cacheKey, userId);
-        if (result) {
-          for (const item of result.split(',')) {
-            if (candidateIds.includes(+item)) {
-              insertArr.push({
-                activityId: activity.id,
-                userId,
-                candidateId: +item,
-              });
+        // 加锁 防止重复插入数据 设置 5 分钟超时时间
+        await this.cacheService.setLock(lockKey, 5 * 60 * 1000);
+        // 当前已投票的人
+        const userIds = activity.activityCandidateUsers.map(item => item.userId);
+        // 活动绑定的候选人
+        const candidateIds = activity.activityCandidates.map(item => item.candidateId);
+
+        const cacheKey = getActivityResultCacheKey(activity.id);
+        const cacheUserIds = await this.redisClient.hkeys(cacheKey);
+        for (const userId of cacheUserIds) {
+          if (userIds.includes(+userId)) {
+            continue;
+          }
+          const result = await this.redisClient.hget(cacheKey, userId);
+          if (result) {
+            for (const item of result.split(',')) {
+              if (candidateIds.includes(+item)) {
+                insertArr.push({
+                  activityId: activity.id,
+                  userId,
+                  candidateId: +item,
+                });
+              }
             }
           }
         }
+      } catch (e) {
+        Logger.error(e.message, e);
+      } finally {
+        await this.cacheService.delLock(lockKey);
       }
     }
     if (insertArr.length) {

@@ -9,6 +9,10 @@
 |- vote-service 项目目录
 |- |- src 代码文件
 |- |- |- common 通用异常过滤器、拦截器
+|- |- |- |- decorators 装饰器
+|- |- |- |- filters 过滤器
+|- |- |- |- guards 守卫
+|- |- |- |- interceptors 拦截器
 |- |- |- modules 业务模块
 |- |- |- |- user 用户模块
 |- |- |- |- vote 投票模块
@@ -32,3 +36,7 @@
 
 # api 文档
 http://host:port/doc
+
+# 账号
+
+默认管理员账号: 123456789@qq.com

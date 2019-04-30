@@ -30,15 +30,15 @@ services:
       - mysql
       - redis
     environment:
-      SERVER_PORT: 3001 # 启动端口
-      DB_HOST: "" # 数据库地址
+      SERVER_PORT: 3000 # 启动端口
+      DB_HOST: "192.168.0.64" # 数据库地址
       DB_PORT: 3306 # 数据库端口
       DB_USERNAME: "root" # 数据库用户
       DB_PASSWORD: 123456 # 数据库密码
       DB_DATABASE: "vote" # 数据库名称
-      EMAIL_TRANSPORT: "" # 邮件服务器 smtps 地址
-      EMAIL_FROM: "" # 邮箱发件人
-      REDIS_HOST: "127.0.0.1" # redis 地址
+      EMAIL_TRANSPORT: "smtps://1053910251@qq.com:fpijyvdizksxbbgj@smtp.qq.com" # 邮件服务器 smtps 地址
+      EMAIL_FROM: "1053910251@qq.com" # 邮箱发件人
+      REDIS_HOST: "192.168.0.64" # redis 地址
       REDIS_PORT: 6379 # redis 端口
       REDIS_PASSWORD: 123456 # redis 密码
     ports:
